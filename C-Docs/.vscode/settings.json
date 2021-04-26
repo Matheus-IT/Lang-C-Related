@@ -1,0 +1,17 @@
+{
+    "C_Cpp.errorSquiggles": "Disabled",
+    "files.associations": {
+        "stdio.h": "c"
+    },
+    "sync.autoDownload": true,
+    "sync.autoUpload": true,
+    "sync.quietSync": true,
+    "editor.fontFamily": "fantasque sans mono, 'Courier New', monospace",
+    "editor.fontSize": 18,
+    "cSpell.words": [
+        "Numeros"
+    ],
+    "cSpell.ignoreWords": [
+        "secondf"
+    ]
+}

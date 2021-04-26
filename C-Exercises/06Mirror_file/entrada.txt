@@ -1,0 +1,3 @@
+
+esse e o conteudo do arquivo de entrada que
+quero ver como vai ficar invertido

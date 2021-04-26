@@ -1,0 +1,1 @@
+static char r[] =  "Eu sou uma string\n";
