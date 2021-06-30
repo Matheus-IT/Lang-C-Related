@@ -104,6 +104,7 @@ int mostra(int *v)
     {
         printf(" %d ", v[cont]);
     }
+    printf("\n");
     return 0;
 }
 
@@ -125,17 +126,16 @@ int main()
     int *octal = NULL;
     char *exadecimal = NULL;
 
-    system("cls");
     printf(" - Digite um numero inteiro: ");
     scanf(" %d", &num);
     decimal = conv_decimal(num);
     printf(" - %d em Decimal: \n", num);
     mostra(decimal);
-    octal = conv_octal(num);
-    printf("\n - %d em Octal: \n", num);
-    mostra(octal);
-    exadecimal = conv_exadecimal(num);
-    printf("\n - %d em Exadecimal: \n", num);
-    mostra_exa(exadecimal);
+    // octal = conv_octal(num);
+    // printf("\n - %d em Octal: \n", num);
+    // mostra(octal);
+    // exadecimal = conv_exadecimal(num);
+    // printf("\n - %d em Exadecimal: \n", num);
+    // mostra_exa(exadecimal);
     return 0;
 }
