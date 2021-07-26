@@ -7,6 +7,7 @@
 // ---------------------- GLOBALS --------------------------
 #define SPEED_LIMIT 60 // Km/h
 #define PAYED_PER_KM 5 // R$5.00 payed per km beyond the speed limit
+#define MAX_FINE_AMOUNT 190
 
 typedef struct {
 	int day;
@@ -99,12 +100,16 @@ void registerSpeedFine(struct HighSpeedFine *fine,
 		strcpy(fine->licensePlate, licensePlate);
 		fine->speed = speed;
 	} else {
-		printf("Invalid speed fine %s - %dkm/h\n", licensePlate, speed);
+		printf("Valor incorreto %s - %dkm/h\n", licensePlate, speed);
 	}
 }
 
 void calculateFine(struct HighSpeedFine *fine) {
 	int val = (fine->speed - SPEED_LIMIT) * PAYED_PER_KM;
+
+	// Limit the amount to be payed
+	if (val > MAX_FINE_AMOUNT)
+		val = MAX_FINE_AMOUNT;
 
 	if (val > 0)
 		fine->fineAmount = val;
@@ -247,6 +252,16 @@ int main() {
 	registerSpeedFine(newItem, "1234cbb", 65);
 	calculateFine(newItem);
 	insertAt(list, newItem, 2);
+
+	newItem = createNode();
+	registerSpeedFine(newItem, "1234bab", 98);
+	calculateFine(newItem);
+	insertLast(list, newItem);
+	
+	newItem = createNode();
+	registerSpeedFine(newItem, "1234cab", 99);
+	calculateFine(newItem);
+	insertLast(list, newItem);
 	printLinkedList(list);
 
 	free(list);
