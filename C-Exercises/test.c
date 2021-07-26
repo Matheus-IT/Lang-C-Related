@@ -4,7 +4,6 @@
 
 
 int main() {
-	system("clear");
 	char name[64];
 
 	printf("Type your name: ");
