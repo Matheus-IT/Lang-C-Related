@@ -6,6 +6,7 @@
 
 // ---------------------- GLOBALS --------------------------
 #define SPEED_LIMIT 60 // Km/h
+#define PAYED_PER_KM 5 // R$5.00 payed per km beyond the speed limit
 
 typedef struct {
 	int day;
@@ -73,14 +74,40 @@ void printLinkedList(struct LinkedList *list) {
 
 	do {
 		if (el->next != NULL) // If it's not the last, print with comma
-			printf("id%d: %s, ", el->id, el->licensePlate);
+			printf("id%d: %s R$%d %dkm/h, \n", el->id, 
+								   	  		   el->licensePlate,
+								   	  		   el->fineAmount,
+									  		   el->speed);
 		else
-			printf("id%d: %s", el->id, el->licensePlate);
+			printf("id%d: %s R$%d %dkm/h", el->id, 
+							   			   el->licensePlate,
+							   			   el->fineAmount,
+										   el->speed);
 		
 		el = el->next;
 	} while (el != NULL);
 
 	printf("]\n");
+}
+
+
+// ---------------- SPEED FINE OPERATIONS ------------------
+void registerSpeedFine(struct HighSpeedFine *fine,
+						  char licensePlate[],
+						  int speed) {
+	if (strlen(licensePlate) == 7 && speed > 0) {
+		strcpy(fine->licensePlate, licensePlate);
+		fine->speed = speed;
+	} else {
+		printf("Invalid speed fine %s - %dkm/h\n", licensePlate, speed);
+	}
+}
+
+void calculateFine(struct HighSpeedFine *fine) {
+	int val = (fine->speed - SPEED_LIMIT) * PAYED_PER_KM;
+
+	if (val > 0)
+		fine->fineAmount = val;
 }
 
 
@@ -202,22 +229,23 @@ int main() {
 	init(list);
 
 	struct HighSpeedFine *newItem = createNode();
-	strcpy(newItem->licensePlate, "1234abc");
+	registerSpeedFine(newItem,  "1234abc", 59);
+	calculateFine(newItem);
 	insertFirst(list, newItem);
-	printLinkedList(list);
 
 	newItem = createNode();
-	strcpy(newItem->licensePlate, "1234acb");
+	registerSpeedFine(newItem, "1234acb", 60);
+	calculateFine(newItem);
 	insertLast(list, newItem);
-	printLinkedList(list);
-	
-	newItem = createNode();
-	strcpy(newItem->licensePlate, "1234cba");
-	insertLast(list, newItem);
-	printLinkedList(list);
 
 	newItem = createNode();
-	strcpy(newItem->licensePlate, "1234cbb");
+	registerSpeedFine(newItem, "1234cba", 61);
+	calculateFine(newItem);
+	insertLast(list, newItem);
+
+	newItem = createNode();
+	registerSpeedFine(newItem, "1234cbb", 65);
+	calculateFine(newItem);
 	insertAt(list, newItem, 2);
 	printLinkedList(list);
 
