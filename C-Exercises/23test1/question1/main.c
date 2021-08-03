@@ -42,6 +42,14 @@ void initBoard(int board[ROWS][COLUMNS]) {
     }
 }
 
+void resetBoard(int board[ROWS][COLUMNS]) {
+    for (int i = 0; i < ROWS; i++) {
+        for (int j = 0; j < COLUMNS; j++) {
+            board[i][j] = EMPTY_POS;
+        }
+    }
+}
+
 bool isPositionEmpty(int pos) {
     return pos == EMPTY_POS;
 }
@@ -65,18 +73,19 @@ void readShipFromFile(FILE *inputFile, Ship *ship) {
                                      &ship->length,
                                      &ship->rowStart,
                                      &ship->columnStart);
-    validateShipInput(*ship);
 }
 
 bool isShipValid(Ship ship, int gameBoard[ROWS][COLUMNS]) {
+    validateShipInput(ship);
+
     // Ensure the ship doesn't get out of the board
-    if (ship.columnStart + ship.length > COLUMNS ||
-        ship.rowStart + ship.length > ROWS) {
+    if ((ship.direction == 0 && ship.columnStart-1 + ship.length > COLUMNS) ||
+        (ship.direction == 1 && ship.rowStart-1 + ship.length > ROWS)) {
         return false; // ship beyond the board limits
     }
 
-    int currentRow = ship.rowStart;
-    int currentCol = ship.columnStart;
+    int currentRow = ship.rowStart - 1;
+    int currentCol = ship.columnStart - 1;
 
     // Check if every position is available on the board
     for (int i = 0; i < ship.length; i++) {
@@ -89,8 +98,8 @@ bool isShipValid(Ship ship, int gameBoard[ROWS][COLUMNS]) {
             currentRow++;
     }
 
-    currentRow = ship.rowStart;
-    currentCol = ship.columnStart;
+    currentRow = ship.rowStart - 1;
+    currentCol = ship.columnStart - 1;
 
     // Mark the ship position on the board
     for (int i = 0; i < ship.length; i++) {
@@ -120,7 +129,6 @@ int main() {
 
     // Read the number of ships of current test case until the end of the file
     while (fscanf(inputTests, "%d", &numOfShips) == 1) {
-        printf("Number of ships: %d\n", numOfShips);
         char result = 'Y';
 
         for (int i = 0; i < numOfShips; i++) {
@@ -128,15 +136,11 @@ int main() {
 
             readShipFromFile(inputTests, &ship);
 
-            printf("\n%d %d %d %d\n", ship.direction,
-                                      ship.length,
-                                      ship.rowStart,
-                                      ship.columnStart);
-
             if (! isShipValid(ship, gameBoard))
                 result = 'N';
         }
         printf("%c\n", result);
+        resetBoard(gameBoard);
     }
 
     fclose(inputTests);
