@@ -70,6 +70,9 @@ void insertLast(DLList *list, struct Node *newNode) {
 
 void insertAt(DLList *list, struct Node *newNode, int position) {
 	if (isEmpty(list)) {
+		// Accept just position 0
+		if (position != 0)
+			return;
 		list->first = newNode;
 		list->last = newNode;
 		list->length++;
@@ -107,53 +110,4 @@ void printDLList(DLList *list) {
 		el = el->next;
 	}
 	printf("\n");
-}
-
-
-int main() {
-	DLList *list = malloc(sizeof(DLList));
-
-	init(list);
-
-	struct Node *newItem = createNode();
-	newItem->data = 5;
-
-	insertLast(list, newItem);
-
-	printf("\n First: %d", list->first->data);
-	printf("\n Last: %d", list->last->data);
-	printf("\n List: ");
-	printDLList(list);
-
-	newItem = createNode();
-	newItem->data = 9;
-
-	insertLast(list, newItem);
-
-	printf("\n First: %d", list->first->data);
-	printf("\n Last: %d", list->last->data);
-	printf("\n List: ");
-	printDLList(list);
-
-	newItem = createNode();
-	newItem->data = 13;
-
-	insertFirst(list, newItem);
-
-	printf("\n First: %d", list->first->data);
-	printf("\n Last: %d", list->last->data);
-	printf("\n List: ");
-	printDLList(list);
-
-	newItem = createNode();
-	newItem->data = 19;
-
-	insertAt(list, newItem, 13);
-
-	printf("\n First: %d", list->first->data);
-	printf("\n Last: %d", list->last->data);
-	printf("\n List: ");
-	printDLList(list);
-
-	return 0;
 }

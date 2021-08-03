@@ -69,25 +69,37 @@ void readShipFromFile(FILE *inputFile, Ship *ship) {
 }
 
 bool isShipValid(Ship ship, int gameBoard[ROWS][COLUMNS]) {
+    // Ensure the ship doesn't get out of the board
+    if (ship.columnStart + ship.length > COLUMNS ||
+        ship.rowStart + ship.length > ROWS) {
+        return false; // ship beyond the board limits
+    }
+
     int currentRow = ship.rowStart;
     int currentCol = ship.columnStart;
 
+    // Check if every position is available on the board
+    for (int i = 0; i < ship.length; i++) {
+        if (! isPositionEmpty(gameBoard[currentRow][currentCol]))
+            return false;
+
+        if (ship.direction == 0) // Ship is horizontally
+            currentCol++;
+        else // Ship is vertically
+            currentRow++;
+    }
+
+    currentRow = ship.rowStart;
+    currentCol = ship.columnStart;
+
     // Mark the ship position on the board
     for (int i = 0; i < ship.length; i++) {
-        if (isPositionEmpty(gameBoard[currentRow][currentCol])) {
-            gameBoard[currentRow][currentCol] = OCCUPIED_POS;
-        } else {
-            return false; // Play on position unavailable
-        }
+        gameBoard[currentRow][currentCol] = OCCUPIED_POS;
 
-        if (ship.direction == 0) { // Ship is horizontally
+        if (ship.direction == 0)
             currentCol++;
-        } else if (ship.direction == 1) { // Ship is vertically
+        else
             currentRow++;
-        } else {
-            perror("Erro ao avaliar direcao!");
-            exit(EXIT_FAILURE);
-        }
     }
     return true;
 }
