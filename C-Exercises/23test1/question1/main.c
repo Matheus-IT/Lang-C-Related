@@ -4,22 +4,94 @@
  * posicionamento inicial é válido.
  * ---------------------------------------------------------------------------
  * Para cada um dos casos de teste no arquivo, a primeira linha da entrada
- * contém um valor inteiro N (1 ≤ N ≤ 100), indicando o número de navios. Cada
- * uma das próximas N linhas contém quatro inteiros:
- * D, L, R e C com D ∈ {0, 1}, 1 ≤ L ≤ 5 e 1 ≤ R, C ≤ 10 descrevendo um navio.
+ * contém um valor inteiro N (1 ≤ N ≤ 100), indicando o número de navios.
+ * Cada uma das próximas N linhas contém quatro inteiros:
+ *     D, L, R e C com D ∈ {0, 1}, 1 ≤ L ≤ 5 e 1 ≤ R, C ≤ 10
+ * descrevendo um navio.
  * Se D = 0 então o navio está alinhado horizontalmente, e ocupa as posições:
- * (R, C)...(R, C + L – 1). Do contrário, o navio está alinhado verticalmente,
- * e ocupa as posições (R, C) ... (R + L – 1, C).
+ *     (R, C) ... (R, C + L – 1)
+ * Do contrário, o navio está alinhado verticalmente, e ocupa as posições
+ *     (R, C) ... (R + L – 1, C)
  */
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
-#define MAX_POSITIONS 100 // The table is a 10 x 10
+
+#define ROWS 10
+#define COLUMNS 10
+#define OCCUPIED_POS 1 // Marks an occupied position on the game board
+#define EMPTY_POS 0 // Marks a free position on the game board
+
 
 typedef struct {
+    int direction;
+    int length;
+    int rowStart;
+    int columnStart;
+} Ship;
 
-} Position;
+
+// --------------------------- BOARD OPERATIONS -----------------------------
+void initBoard(int board[ROWS][COLUMNS]) {
+    for (int i = 0; i < ROWS; i++) {
+        for (int j = 0; j < COLUMNS; j++) {
+            board[i][j] = EMPTY_POS;
+        }
+    }
+}
+
+bool isPositionEmpty(int pos) {
+    return pos == EMPTY_POS;
+}
+
+
+// ---------------------------- SHIP OPERATIONS -----------------------------
+void validateShipInput(Ship ship) {
+    if ((ship.direction < 0 || ship.direction > 1) ||   // Invalid direction
+        (ship.length < 1 || ship.length > 5) ||         // Invalid length
+        (ship.rowStart < 1 || ship.rowStart > 10) ||    // Invalid row start
+        (ship.columnStart < 1 || ship.columnStart > 10) // Invalid column start
+        ) {
+        perror("Erro: dado de entrada invalido ou fora do limite!");
+        exit(EXIT_FAILURE);
+    }
+}
+
+
+void readShipFromFile(FILE *inputFile, Ship *ship) {
+    fscanf(inputFile, "%d %d %d %d", &ship->direction,
+                                     &ship->length,
+                                     &ship->rowStart,
+                                     &ship->columnStart);
+    validateShipInput(*ship);
+}
+
+bool isShipValid(Ship ship, int gameBoard[ROWS][COLUMNS]) {
+    int currentRow = ship.rowStart;
+    int currentCol = ship.columnStart;
+
+    // Mark the ship position on the board
+    for (int i = 0; i < ship.length; i++) {
+        if (isPositionEmpty(gameBoard[currentRow][currentCol])) {
+            gameBoard[currentRow][currentCol] = OCCUPIED_POS;
+        } else {
+            return false; // Play on position unavailable
+        }
+
+        if (ship.direction == 0) { // Ship is horizontally
+            currentCol++;
+        } else if (ship.direction == 1) { // Ship is vertically
+            currentRow++;
+        } else {
+            perror("Erro ao avaliar direcao!");
+            exit(EXIT_FAILURE);
+        }
+    }
+    return true;
+}
+// --------------------------------------------------------------------------
 
 
 int main() {
@@ -31,49 +103,28 @@ int main() {
     }
 
     int numOfShips = 0;
-    Position *positionsOccupied = malloc(MAX_POSITIONS * sizeof(Position));
-    // Read until the end of the file
+    int gameBoard[ROWS][COLUMNS];
+    initBoard(gameBoard);
+
+    // Read the number of ships of current test case until the end of the file
     while (fscanf(inputTests, "%d", &numOfShips) == 1) {
         printf("Number of ships: %d\n", numOfShips);
+        char result = 'Y';
 
         for (int i = 0; i < numOfShips; i++) {
-            int direction = 0, length = 0, rowStart = 0, columnStart = 0;
+            Ship ship = {0, 0, 0, 0};
 
-            fscanf(inputTests, "%d %d %d %d", &direction,
-                                              &length,
-                                              &rowStart,
-                                              &columnStart);
+            readShipFromFile(inputTests, &ship);
 
-            // Testing limits
-            if ((direction < 0 || direction > 1) ||   // Invalid direction
-                (length < 1 || length > 5) ||         // Invalid length
-                (rowStart < 1 || rowStart > 10) ||    // Invalid row start
-                (columnStart < 1 || columnStart > 10) // Invalid column start
-                ) {
-                perror("Erro: dado de entrada invalido ou fora do limite!");
-            }
+            printf("\n%d %d %d %d\n", ship.direction,
+                                      ship.length,
+                                      ship.rowStart,
+                                      ship.columnStart);
 
-            printf("\n%d %d %d %d\n", direction, length, rowStart, columnStart);
-
-            int currentRow = rowStart;
-            int currentColumn = columnStart;
-
-            for (int c = 0; c < length; c++) {
-                if (direction == 0) { // Ship is horizontally
-                    // Need to finish
-                    positionsOccupied = createPosition(currentRow, currentColumn);
-                    currentColumn++;
-                } else if (direction == 1) { // Ship is vertically
-                    currentRow++;
-                } else {
-                    perror("Erro ao avaliar direcao!");
-                    exit(EXIT_FAILURE);
-                }
-            }
-
-            puts("N");
-            puts("Y");
+            if (! isShipValid(ship, gameBoard))
+                result = 'N';
         }
+        printf("%c\n", result);
     }
 
     fclose(inputTests);
