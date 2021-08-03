@@ -24,15 +24,28 @@ bool isPositionEmpty(int pos) {
     return pos == EMPTY_POS;
 }
 
+void validateShipInput(Ship ship) {
+    if ((ship.direction < 0 || ship.direction > 1) ||   // Invalid direction
+        (ship.length < 1 || ship.length > 5) ||         // Invalid length
+        (ship.rowStart < 1 || ship.rowStart > 10) ||    // Invalid row start
+        (ship.columnStart < 1 || ship.columnStart > 10) // Invalid column start
+        ) {
+        perror("Erro: dado de entrada invalido ou fora do limite!");
+        exit(EXIT_FAILURE);
+    }
+}
+
 bool isShipValid(Ship ship, int gameBoard[ROWS][COLUMNS]) {
+    validateShipInput(ship);
+
     // Ensure the ship doesn't get out of the board
-    if (ship.columnStart + ship.length > COLUMNS ||
-        ship.rowStart + ship.length > ROWS) {
+    if ((ship.direction == 0 && ship.columnStart-1 + ship.length > COLUMNS) ||
+        (ship.direction == 1 && ship.rowStart-1 + ship.length > ROWS)) {
         return false; // ship beyond the board limits
     }
 
-    int currentRow = ship.rowStart;
-    int currentCol = ship.columnStart;
+    int currentRow = ship.rowStart - 1;
+    int currentCol = ship.columnStart - 1;
 
     // Check if every position is available on the board
     for (int i = 0; i < ship.length; i++) {
@@ -45,8 +58,8 @@ bool isShipValid(Ship ship, int gameBoard[ROWS][COLUMNS]) {
             currentRow++;
     }
 
-    currentRow = ship.rowStart;
-    currentCol = ship.columnStart;
+    currentRow = ship.rowStart - 1;
+    currentCol = ship.columnStart - 1;
 
     // Mark the ship position on the board
     for (int i = 0; i < ship.length; i++) {
