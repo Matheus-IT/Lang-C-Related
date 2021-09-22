@@ -1,71 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include "./utilityFunctions.c"
 
 
-struct Node {
-    int data;
-    struct Node *subLeft;
-    struct Node *subRight;
-};
-
-// Usar alias "Tree" para representar árvore
-typedef struct Node Tree;
-
-Tree * init() {
-    return NULL;
-}
-
-Tree * createNewNode(int value) {
-    struct Node *n = malloc(sizeof(struct Node));
-    n->subLeft = NULL;
-    n->subRight = NULL;
-    n->data = value;
-    return n;
-}
-
-bool isEmpty(Tree *root) {
-    return root == NULL;
-}
-
-Tree * insert(Tree *root, int value) {
+int countLeaves(Tree *root) {
     if (isEmpty(root))
-        return createNewNode(value);
+        return 0;
 
-    if (value > root->data)
-        root->subRight = insert(root->subRight, value);
-    else
-        root->subLeft = insert(root->subLeft, value);
-    return root;
-}
+    if (root->subLeft == NULL && root->subRight == NULL)
+        return 1;
 
-Tree * populateTree(Tree *root, int samples[], unsigned length) {
-    for (int i = 0; i < length; i++)
-        root = insert(root, samples[i]);
-    return root;
-}
-
-void inOrder(Tree *root) {
-    if (! isEmpty(root)) {
-        inOrder(root->subLeft);
-        printf("[%2i] ", root->data);
-        inOrder(root->subRight);
-    }
-}
-
-Tree * removeLeaves(Tree *root) {
-    if (isEmpty(root))
-        return NULL;
-
-    if (root->subLeft == NULL && root->subRight == NULL) {
-        free(root);
-        root = NULL;
-    }
-
-    root->subLeft = removeLeaves(root->subLeft);
-    root->subRight = removeLeaves(root->subRight);
-
-    return root;
+    return countLeaves(root->subLeft) + countLeaves(root->subRight);
 }
 
 int main() {
@@ -77,9 +23,7 @@ int main() {
 
     inOrder(root);
     printf("\n");
-    removeLeaves(root);
-    inOrder(root);
-
+    printf("O numero de folhas eh: %d\n", countLeaves(root));
 
     return 0;
 }
