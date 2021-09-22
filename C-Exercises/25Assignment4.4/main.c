@@ -62,10 +62,9 @@ Tree * removeLeaves(Tree *root) {
         root = NULL;
     }
 
-    if (! isEmpty(root)) {
-        root->subLeft = removeLeaves(root->subLeft);
-        root->subRight = removeLeaves(root->subRight);
-    }
+    root->subLeft = removeLeaves(root->subLeft);
+    root->subRight = removeLeaves(root->subRight);
+
     return root;
 }
 
