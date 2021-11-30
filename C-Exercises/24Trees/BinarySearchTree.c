@@ -86,43 +86,54 @@ Tree findGreater(Tree temp) {
 int main() {
     Tree root = init();
 
-
-    root = insert(root, 9);
-    root = insert(root, 15);
+    root = insert(root, 10);
     root = insert(root, 7);
-    root = insert(root, 12);
-    root = insert(root, 19);
-    root = insert(root, 17);
-    root = insert(root, 21);
+    root = insert(root, 14);
+    root = insert(root, 2);
+    root = insert(root, 8);
     root = insert(root, 13);
-    root = insert(root, 5);
+    root = insert(root, 25);
+    root = insert(root, 4);
+    root = insert(root, 6);
+    root = insert(root, 9);
+    root = insert(root, 12);
+    root = insert(root, 20);
+    root = insert(root, 31);
 
     printf("\n\nEm ordem:");
     inOrder(root);
 
-    while (true) {
-        Tree temp = NULL;
-        int value = 0;
+    printf("\n\nPre ordem:");
+    preOrder(root);
 
-        printf("\nInforme o valor: ");
-        scanf("%i", &value);
-        if (value == 0)
-            break;
+    printf("\n\nPos ordem:");
+    postOrder(root);
 
-        temp = find(root, value);
-        if (temp)
-            printf("\nValor %i encontrado!!\n", temp->data);
-        else
-            printf("\nValor %i NAO encontrado!!\n", value);
-    }
+    printf("\n");
 
-    if (! isEmpty(root)) {
-        Tree temp = NULL;
-        temp = findSmallest(root);
-        printf("\nMenor valor %i encontrado!!\n", temp->data);
+    // while (true) {
+    //     Tree temp = NULL;
+    //     int value = 0;
 
-        temp = findGreater(root);
-        printf("\nMaior valor %i encontrado!!\n", temp->data);
-    }
+    //     printf("\nInforme o valor: ");
+    //     scanf("%i", &value);
+    //     if (value == 0)
+    //         break;
+
+    //     temp = find(root, value);
+    //     if (temp)
+    //         printf("\nValor %i encontrado!!\n", temp->data);
+    //     else
+    //         printf("\nValor %i NAO encontrado!!\n", value);
+    // }
+
+    // if (! isEmpty(root)) {
+    //     Tree temp = NULL;
+    //     temp = findSmallest(root);
+    //     printf("\nMenor valor %i encontrado!!\n", temp->data);
+
+    //     temp = findGreater(root);
+    //     printf("\nMaior valor %i encontrado!!\n", temp->data);
+    // }
     return 0;
 }
